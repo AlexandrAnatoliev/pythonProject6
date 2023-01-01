@@ -1,0 +1,7 @@
+# Внешние зависимости:
+# Для работы с http-запросами установим:
+# pip install requests
+# Для удобства парсинга установим:
+# pip install beautifulsoup4
+requests
+beautifulsoup4
