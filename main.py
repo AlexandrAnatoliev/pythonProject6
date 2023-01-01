@@ -10,28 +10,30 @@ from bs4 import BeautifulSoup as BS
 from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
 # парсим первые 20 страниц
-# page_list = range(1, 0 + 1)
+page_list = range(28350, 28353)
 recipe_list = []
 
-# for page in page_list:
+for page in page_list:
 # Получаем содержимое страницы ("ее адрес") через библиотеку requests
-r = requests.get(site_adress)  # + str(page)
+    r = requests.get(site_adress+ str(page))  #
 # скачанное обрабатываем через библиотеку BeautifulSoup
-html = BS(r.content, 'html.parser')
+    html = BS(r.content, 'html.parser')
 
-recipe =[]  # весь рецепт
+    recipe =[]  # весь рецепт
 # Скачиваем весь текст со страницы (с мусором)
 # скачиваем название
-title = html.select(sel_title)
-recipe += title
-recipe.append("ИНГРЕДИЕНТЫ:")
+    title = html.select(sel_title)
+    recipe += title
+    recipe.append("ИНГРЕДИЕНТЫ:")
 # скачиваем ингредиенты
-ingredient = html.select(sel_ingredient)
-recipe += ingredient
-recipe.append("РЕЦЕПТ:")
+    ingredient = html.select(sel_ingredient)
+    recipe += ingredient
+    recipe.append("РЕЦЕПТ:")
 # скачиваем рецепт
-rec = html.select(sel_recipe)
-recipe += rec
+    rec = html.select(sel_recipe)
+    recipe += rec
+# фармируем лист с рецептами
+    recipe_list.append(recipe)
 
 
 # чистим текст строки и формируем анекдот
@@ -57,15 +59,15 @@ file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается фа
 
 # Очищеная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
 recipe_text = []
-
-for rcp in recipe:
+for recipe in recipe_list:
+    for rcp in recipe:
     # убираем пустые строки
-    if clean_text(rcp) == '':
-        continue
-    if clean_text(rcp) == ' ':
-        continue
-    recipe_text.append(clean_text(rcp))
-    file2.write(clean_text(rcp) + '\n')
-file2.write('\n')
+        if clean_text(rcp) == '':
+            continue
+        if clean_text(rcp) == ' ':
+            continue
+        recipe_text.append(clean_text(rcp))
+        file2.write(clean_text(rcp) + '\n')
+    file2.write('\n')
 file2.close()  # закрывает файл
 print(recipe_text)
