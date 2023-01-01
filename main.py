@@ -25,6 +25,8 @@ recipe =[]  # весь рецепт
 # скачиваем название
 title = html.select(sel_title)
 recipe += title
+recipe.append("\nИНГРЕДИЕНТЫ:\n")
+print(recipe)
 # скачиваем ингредиенты
 ingredient = html.select(sel_ingredient)
 recipe += ingredient
@@ -41,6 +43,8 @@ def clean_text(text):
     :return: чистый текст
     """
     cl_text = str(text)
+    if cl_text == '':
+        return None
     while '<' in cl_text:
         cl_text = cl_text[:cl_text.find('<')] + cl_text[cl_text.find('>') + 1:]
     while '\r\n' in cl_text:
@@ -53,9 +57,15 @@ def clean_text(text):
 # print(html)
 file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается файл, 'w' - запись файла
 
-# Очищеная страница записывается в список 'jokes' и в текстовый файл 'secondText.txt'
+# Очищеная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
 recipe_text = []
+
 for rcp in recipe:
+    # убираем пустые строки
+    if clean_text(rcp) == '':
+        continue
+    if clean_text(rcp) == ' ':
+        continue
     recipe_text.append(clean_text(rcp))
     file2.write(clean_text(rcp) + '\n')
 
