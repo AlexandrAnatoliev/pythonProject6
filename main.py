@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup as BS
 from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
 # парсим первые 20 страниц
-page_list = range(28350, 28353)
+page_list = range(10000, 10100)
 recipe_list = []
 
 for page in page_list:
