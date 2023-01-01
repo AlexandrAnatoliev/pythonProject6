@@ -13,7 +13,6 @@ from config import site_adress, sel_title, sel_ingredient, sel_recipe
 # page_list = range(1, 0 + 1)
 recipe_list = []
 
-
 # for page in page_list:
 # Получаем содержимое страницы ("ее адрес") через библиотеку requests
 r = requests.get(site_adress)  # + str(page)
@@ -25,11 +24,11 @@ recipe =[]  # весь рецепт
 # скачиваем название
 title = html.select(sel_title)
 recipe += title
-recipe.append("\nИНГРЕДИЕНТЫ:\n")
-print(recipe)
+recipe.append("ИНГРЕДИЕНТЫ:")
 # скачиваем ингредиенты
 ingredient = html.select(sel_ingredient)
 recipe += ingredient
+recipe.append("РЕЦЕПТ:")
 # скачиваем рецепт
 rec = html.select(sel_recipe)
 recipe += rec
