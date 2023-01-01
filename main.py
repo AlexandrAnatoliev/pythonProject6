@@ -53,7 +53,6 @@ def clean_text(text):
     return cl_text
 
 
-# print(html)
 file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается файл, 'w' - запись файла
 
 # Очищеная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
@@ -67,6 +66,6 @@ for rcp in recipe:
         continue
     recipe_text.append(clean_text(rcp))
     file2.write(clean_text(rcp) + '\n')
-
+file2.write('\n')
 file2.close()  # закрывает файл
 print(recipe_text)
