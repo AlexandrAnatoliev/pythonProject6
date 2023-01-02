@@ -1,10 +1,10 @@
-# pythonProject2
+# pythonProject6
 
-[Ru] Парсер анекдоты с сайта
+[Ru] Парсер рецептов с сайта
 
 ## Описание:
 
-Парсит анекдоты со страницы и выводит в виде списка строк. Видео в You Tube от Хауди-Хо "Парсинг в Python за 10 минут!"
+Парсит рецепты со страницы и выводит в виде списка строк. Видео в You Tube от Хауди-Хо "Парсинг в Python за 10 минут!"
 
 ## Требования
 
@@ -22,15 +22,16 @@ sel = " div > div.holder-body > p"
 ```python
 import requests
 from bs4 import BeautifulSoup as BS
+from config import site_adress, sel_title, sel_ingredient, sel_recipe
 ```
 
 ## Примеры использования
 
 #### Указываем нужные нам страницы, диапазон (певая, последняя)
 ```python
-# парсим первые 20 страниц
-page_list = range(1, 20 + 1)
-fun_list = []
+# парсим нужные страницы
+page_list = range(10000, 10100)
+recipe_list = []
 ```
 #### Пишем адрес сайта
 
@@ -43,7 +44,22 @@ r = requests.get("https://anekdoty.ru/samye-smeshnye/")
 ```python
 fun = html.select(" div > div.holder-body > p")
 ```
-
+#### Скачиваем нужный текст со страницы (с мусором)
+```python
+# скачиваем название
+    title = html.select(sel_title)
+    recipe += title
+    recipe.append("ИНГРЕДИЕНТЫ:")
+# скачиваем ингредиенты
+    ingredient = html.select(sel_ingredient)
+    recipe += ingredient
+    recipe.append("РЕЦЕПТ:")
+# скачиваем рецепт
+    rec = html.select(sel_recipe)
+    recipe += rec
+# фармируем лист с рецептами
+    recipe_list.append(recipe)
+```
 #### Чистим содержимое от лишнего
 
 ```python
@@ -63,18 +79,25 @@ def clean_text(text):
     return cl_text
 ```
 
-#### Записываем спарсенные шутки в тестовый файл. Каждая шутка - с новой строки
+#### Записываем спарсенные рецепты в тестовый файл. Каждая между рецептами - два пробела (\n\n\n)
 
 "Название текста", w - запись текста, 'кодировка текста'
 
 ```python
-file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается файл, 'w' - запись файла
-
-# Очищеная страница записывается в список 'jokes' и в текстовый файл 'secondText.txt'
-jokes = []
-for joke in fun:
-    jokes.append(clean_text(joke))
-    file2.write(clean_text(joke) + '\n')
-
+recipe_text = []
+for recipe in recipe_list:
+    for rcp in recipe:
+    # убираем пустые строки
+        if clean_text(rcp) == '':
+            continue
+        if clean_text(rcp) == ' ':
+            continue
+        recipe_text.append(clean_text(rcp))
+    # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
+        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:')-1:
+            file2.write(clean_text(rcp) + '\n')
+        else:
+            file2.write(clean_text(rcp) + '\n\n')
+    file2.write('\n')
 file2.close()  # закрывает файл
 ```

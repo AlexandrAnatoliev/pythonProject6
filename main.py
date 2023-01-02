@@ -9,8 +9,8 @@ import requests
 from bs4 import BeautifulSoup as BS
 from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
-# парсим первые 20 страниц
-page_list = range(10000, 10002)
+# парсим нужные страницы
+page_list = range(10000, 10100)
 recipe_list = []
 
 for page in page_list:
@@ -20,7 +20,7 @@ for page in page_list:
     html = BS(r.content, 'html.parser')
 
     recipe =[]  # весь рецепт
-# Скачиваем весь текст со страницы (с мусором)
+# Скачиваем нужный текст со страницы (с мусором)
 # скачиваем название
     title = html.select(sel_title)
     recipe += title
@@ -36,7 +36,7 @@ for page in page_list:
     recipe_list.append(recipe)
 
 
-# чистим текст строки и формируем анекдот
+# чистим текст строки
 def clean_text(text):
     """
     Удаляем все символы в спарсенном тексте между скобками < и >
@@ -67,6 +67,7 @@ for recipe in recipe_list:
         if clean_text(rcp) == ' ':
             continue
         recipe_text.append(clean_text(rcp))
+    # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
         if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:')-1:
             file2.write(clean_text(rcp) + '\n')
         else:
