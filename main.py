@@ -14,35 +14,41 @@ page_list = range(10000, 10100)
 recipe_list = []
 
 for page in page_list:
-# Получаем содержимое страницы ("ее адрес") через библиотеку requests
-    r = requests.get(site_adress+ str(page))  #
-# скачанное обрабатываем через библиотеку BeautifulSoup
+    # Получаем содержимое страницы ("ее адрес") через библиотеку requests
+    r = requests.get(site_adress + str(page))  #
+    # скачанное обрабатываем через библиотеку BeautifulSoup
     html = BS(r.content, 'html.parser')
 
-    recipe =[]  # весь рецепт
-# Скачиваем нужный текст со страницы (с мусором)
-# скачиваем название
+    recipe = []  # весь рецепт
+    # Скачиваем нужный текст со страницы (с мусором)
+    # скачиваем название
     title = html.select(sel_title)
     recipe += title
     recipe.append("ИНГРЕДИЕНТЫ:")
-# скачиваем ингредиенты
+    # скачиваем ингредиенты
     ingredient = html.select(sel_ingredient)
     recipe += ingredient
     recipe.append("РЕЦЕПТ:")
-# скачиваем рецепт
+    # скачиваем рецепт
     rec = html.select(sel_recipe)
     recipe += rec
-# фармируем лист с рецептами
+    # фармируем лист с рецептами
     recipe_list.append(recipe)
+
+# словарь 'русская буква':'латинская буква'
+d_chars = {'А': 'A', 'а': 'a', 'В': 'B', 'е': 'e', 'Е': 'E', 'К': 'K', 'М': 'M', 'Н': 'H', 'о': 'o', 'О': 'O', 'Р': 'P',
+           'с': 'c', 'С': 'C', 'Т': 'T', 'х': 'x', 'Х': 'X'}
 
 
 # чистим текст строки
 def clean_text(text):
     """
-    Удаляем все символы в спарсенном тексте между скобками < и >
+    Удаляем все символы в спарсенном тексте между скобками < и >.
+    Заменяем русские буквы на английскик.
     :param text: вводим текст
     :return: чистый текст
     """
+    global d_chars
     cl_text = str(text)
     if cl_text == '':
         return None
@@ -52,6 +58,11 @@ def clean_text(text):
         cl_text = cl_text[:cl_text.find('\r')] + cl_text[cl_text.find('\n') + 1:]
     while '\n' in cl_text:
         cl_text = cl_text.replace('\n', ' ')
+    # заменяем русские буквы на английские
+    for char in d_chars:
+        if char in cl_text:
+            while char in cl_text:
+                cl_text = cl_text.replace(char, d_chars[char])
     return cl_text
 
 
@@ -61,14 +72,14 @@ file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается фа
 recipe_text = []
 for recipe in recipe_list:
     for rcp in recipe:
-    # убираем пустые строки
+        # убираем пустые строки
         if clean_text(rcp) == '':
             continue
         if clean_text(rcp) == ' ':
             continue
         recipe_text.append(clean_text(rcp))
-    # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
-        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:')-1:
+        # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
+        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:') - 1:
             file2.write(clean_text(rcp) + '\n')
         else:
             file2.write(clean_text(rcp) + '\n\n')

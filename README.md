@@ -66,22 +66,32 @@ recipe += rec
 recipe_list.append(recipe)
 ```
 
+#### # словарь 'русская буква':'латинская буква'
+
+```python
+d_chars = {'А': 'A', 'а': 'a', 'В': 'B', 'е': 'e', 'Е': 'E', 'К': 'K', 'М': 'M', 'Н': 'H', 'о': 'o', 'О': 'O', 'Р': 'P',
+           'с': 'c', 'С': 'C', 'Т': 'T', 'х': 'x', 'Х': 'X'}
+```
+
 #### Чистим содержимое от лишнего
 
 ```python
 def clean_text(text):
-    """
-    Удаляем все символы в спарсенном тексте между скобками < и >
-    :param text: вводим текст
-    :return: чистый текст
-    """
+    global d_chars
     cl_text = str(text)
+    if cl_text == '':
+        return None
     while '<' in cl_text:
         cl_text = cl_text[:cl_text.find('<')] + cl_text[cl_text.find('>') + 1:]
     while '\r\n' in cl_text:
         cl_text = cl_text[:cl_text.find('\r')] + cl_text[cl_text.find('\n') + 1:]
     while '\n' in cl_text:
         cl_text = cl_text.replace('\n', ' ')
+    # заменяем русские буквы на английские
+    for char in d_chars:
+        if char in cl_text:
+            while char in cl_text:
+                cl_text = cl_text.replace(char, d_chars[char])
     return cl_text
 ```
 
