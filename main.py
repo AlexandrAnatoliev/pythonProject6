@@ -10,7 +10,8 @@ from bs4 import BeautifulSoup as BS
 from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
 # парсим нужные страницы
-page_list = range(10000, 10100)
+# ВАЖНО! Python не обрабатывает тектовые файлы весом более 2.56мб!
+page_list = range(10501, 11000)
 recipe_list = []
 
 for page in page_list:
