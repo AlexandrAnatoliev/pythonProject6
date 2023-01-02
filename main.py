@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup as BS
 from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
 # парсим первые 20 страниц
-page_list = range(10000, 10100)
+page_list = range(10000, 10002)
 recipe_list = []
 
 for page in page_list:
@@ -67,7 +67,10 @@ for recipe in recipe_list:
         if clean_text(rcp) == ' ':
             continue
         recipe_text.append(clean_text(rcp))
-        file2.write(clean_text(rcp) + '\n')
+        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:')-1:
+            file2.write(clean_text(rcp) + '\n')
+        else:
+            file2.write(clean_text(rcp) + '\n\n')
     file2.write('\n')
 file2.close()  # закрывает файл
 print(recipe_text)
