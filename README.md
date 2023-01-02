@@ -11,6 +11,7 @@
 * Установить внешние зависимости
 * $ pip install -r requirements.txt
 * создать файл config.py в котором разместить адрес сайта и селектор в виде:
+
 ```python
 # Сайт Анекдоты.ру: адрес и селектор
 site_adress = "https://anekdoty.ru/samye-smeshnye/page/"
@@ -28,11 +29,13 @@ from config import site_adress, sel_title, sel_ingredient, sel_recipe
 ## Примеры использования
 
 #### Указываем нужные нам страницы, диапазон (певая, последняя)
+
 ```python
 # парсим нужные страницы
 page_list = range(10000, 10100)
 recipe_list = []
 ```
+
 #### Пишем адрес сайта
 
 ```python
@@ -44,22 +47,25 @@ r = requests.get("https://anekdoty.ru/samye-smeshnye/")
 ```python
 fun = html.select(" div > div.holder-body > p")
 ```
+
 #### Скачиваем нужный текст со страницы (с мусором)
+
 ```python
 # скачиваем название
-    title = html.select(sel_title)
-    recipe += title
-    recipe.append("ИНГРЕДИЕНТЫ:")
+title = html.select(sel_title)
+recipe += title
+recipe.append("ИНГРЕДИЕНТЫ:")
 # скачиваем ингредиенты
-    ingredient = html.select(sel_ingredient)
-    recipe += ingredient
-    recipe.append("РЕЦЕПТ:")
+ingredient = html.select(sel_ingredient)
+recipe += ingredient
+recipe.append("РЕЦЕПТ:")
 # скачиваем рецепт
-    rec = html.select(sel_recipe)
-    recipe += rec
+rec = html.select(sel_recipe)
+recipe += rec
 # фармируем лист с рецептами
-    recipe_list.append(recipe)
+recipe_list.append(recipe)
 ```
+
 #### Чистим содержимое от лишнего
 
 ```python
@@ -75,7 +81,7 @@ def clean_text(text):
     while '\r\n' in cl_text:
         cl_text = cl_text[:cl_text.find('\r')] + cl_text[cl_text.find('\n') + 1:]
     while '\n' in cl_text:
-        cl_text = cl_text.replace('\n',' ')
+        cl_text = cl_text.replace('\n', ' ')
     return cl_text
 ```
 
@@ -84,17 +90,18 @@ def clean_text(text):
 "Название текста", w - запись текста, 'кодировка текста'
 
 ```python
+file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается файл, 'w' - запись файла
 recipe_text = []
 for recipe in recipe_list:
     for rcp in recipe:
-    # убираем пустые строки
+        # убираем пустые строки
         if clean_text(rcp) == '':
             continue
         if clean_text(rcp) == ' ':
             continue
         recipe_text.append(clean_text(rcp))
-    # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
-        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:')-1:
+        # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
+        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:') - 1:
             file2.write(clean_text(rcp) + '\n')
         else:
             file2.write(clean_text(rcp) + '\n\n')
