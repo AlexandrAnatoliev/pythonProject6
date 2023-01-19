@@ -11,7 +11,7 @@ from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
 # парсим нужные страницы
 # ВАЖНО! Python не обрабатывает тектовые файлы весом более 2.56мб!
-page_list = range(10501, 11000)
+page_list = range(14990, 15000)
 recipe_list = []
 
 for page in page_list:
@@ -37,8 +37,7 @@ for page in page_list:
     recipe_list.append(recipe)
 
 # словарь 'русская буква':'латинская буква'
-d_chars = {'А': 'A', 'а': 'a', 'В': 'B', 'е': 'e', 'Е': 'E', 'К': 'K', 'М': 'M', 'Н': 'H', 'о': 'o', 'О': 'O', 'Р': 'P',
-           'с': 'c', 'С': 'C', 'Т': 'T', 'х': 'x', 'Х': 'X'}
+d_chars = {'а': 'a', 'е': 'e', 'о': 'o', 'с': 'c', 'х': 'x'}
 
 
 # чистим текст строки
@@ -69,7 +68,7 @@ def clean_text(text):
 
 file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается файл, 'w' - запись файла
 
-# Очищеная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
+# Очищенная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
 recipe_text = []
 for recipe in recipe_list:
     for rcp in recipe:
