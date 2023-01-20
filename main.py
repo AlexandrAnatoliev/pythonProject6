@@ -10,8 +10,8 @@ from bs4 import BeautifulSoup as BS
 from config import site_adress, sel_title, sel_ingredient, sel_recipe
 
 # парсим нужные страницы
-# ВАЖНО! Python не обрабатывает тектовые файлы весом более 2.56мб!
-page_list = range(14990, 15000)
+# ВАЖНО! Python не обрабатывает текстовые файлы весом более 2.56мб!
+page_list = range(26001, 26500)
 recipe_list = []
 
 for page in page_list:
@@ -67,22 +67,23 @@ def clean_text(text):
 
 
 file2 = open("secondText.txt", 'w', encoding='utf-8')  # создается файл, 'w' - запись файла
-
-# Очищенная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
-recipe_text = []
-for recipe in recipe_list:
-    for rcp in recipe:
-        # убираем пустые строки
-        if clean_text(rcp) == '':
-            continue
-        if clean_text(rcp) == ' ':
-            continue
-        recipe_text.append(clean_text(rcp))
-        # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
-        if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:') - 1:
-            file2.write(clean_text(rcp) + '\n')
-        else:
-            file2.write(clean_text(rcp) + '\n\n')
-    file2.write('\n')
-file2.close()  # закрывает файл
-print(recipe_text)
+try:
+    # Очищенная страница записывается в список 'recipe_text' и в текстовый файл 'secondText.txt'
+    recipe_text = []
+    for recipe in recipe_list:
+        for rcp in recipe:
+            # убираем пустые строки
+            if clean_text(rcp) == '':
+                continue
+            if clean_text(rcp) == ' ':
+                continue
+            recipe_text.append(clean_text(rcp))
+            # пробел между строчками, кроме как между "ИНГРЕДИЕНТЫ" и "РЕЦЕПТ"
+            if recipe.index('ИНГРЕДИЕНТЫ:') < recipe.index(rcp) < recipe.index('РЕЦЕПТ:') - 1:
+                file2.write(clean_text(rcp) + '\n')
+            else:
+                    file2.write(clean_text(rcp) + '\n\n')
+        file2.write('\n')
+finally:  # в случае ошибок выводит то, что уже сделано
+    file2.close()  # закрывает файл
+    print(recipe_text)
